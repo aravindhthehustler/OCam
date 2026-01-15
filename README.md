@@ -4,13 +4,9 @@
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/serifpersia/OCam)](https://github.com/serifpersia/OCam/releases/latest)
 [![License: MIT](https://img.shields.io/badge/License-GPL2-yellow.svg)](https://opensource.org/licenses/gpl-2.0)
 
-
-
 </div>
 
-
-
-**OCam** alows your **Android** smartphone to be used as a high-quality, usb/wireless OBS camera source.
+**OCam** allows your **Android** smartphone to be used as a high-quality, usb/wireless OBS camera source.
 
 ## Features
 *   Utilizes your **Android** device's camera for high-quality video input.
@@ -84,6 +80,12 @@ Ensure you have the following development tools installed on your system:
         ```bash
         sudo dnf install gcc-c++ ffmpeg-devel cmake
         ```
+
+    *   **Arch** (e.g., Arch Linux, Manjaro, Cachyos):
+        ```bash
+        sudo pacman -Syu base-devel ffmpeg cmake
+        ```
+        
 *   **Android App:**
     *   **Android Studio:** The official IDE for Android development, required to open the `android` project and build the `OCam.apk`.
 
@@ -195,4 +197,4 @@ Contributions are welcome!
 
 ## License
 
-This project is licensed under the GPL2 License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the GPLv2 License - see the [LICENSE](LICENSE) file for details.
