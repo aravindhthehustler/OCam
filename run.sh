@@ -2,7 +2,7 @@
 
 # Function to check if a command exists
 command_exists() {
-    command -v "" >/dev/null 2>&1
+    command -v "$1" >/dev/null 2>&1
 }
 
 # Function to check for adb
@@ -45,19 +45,31 @@ build_obs_plugin() {
 
 # Function to install the Android app
 install_android_app() {
-    APK_PATH="android/app/build/outputs/apk/debug/app-debug.apk"
-    if [ -f "$APK_PATH" ]; then
-        echo "Found APK at $APK_PATH. Installing..."
-        adb install -r "$APK_PATH"
-    else
-        echo "Default APK not found at $APK_PATH."
-        echo "Please build the Android app first, or enter the path to the APK file manually:"
-        read -r apk_path_manual
-        if [ -f "$apk_path_manual" ]; then
-            adb install -r "$apk_path_manual"
-        else
-            echo "File not found: $apk_path_manual"
+    DEFAULT_APK_PATH="android/app/build/outputs/apk/debug/app-debug.apk"
+    
+    if [ -f "$DEFAULT_APK_PATH" ]; then
+        echo "Found APK at $DEFAULT_APK_PATH. Installing..."
+        adb install -r "$DEFAULT_APK_PATH"
+        return 0
+    elif [ -d "release" ]; then
+        # Check for APKs within the 'release' directory
+        RELEASE_APKS=($(find release -name "*.apk" -print -quit)) # Find first APK and quit
+
+        if [ ${#RELEASE_APKS[@]} -gt 0 ]; then
+            RELEASE_DIR_APK="${RELEASE_APKS[0]}"
+            echo "Found APK in release directory: $RELEASE_DIR_APK. Installing..."
+            adb install -r "$RELEASE_DIR_APK"
+            return 0
         fi
+    fi
+
+    echo "No APK found in default build path or release directory."
+    echo "Please build the Android app first, or enter the path to the APK file manually:"
+    read -r apk_path_manual
+    if [ -f "$apk_path_manual" ]; then
+        adb install -r "$apk_path_manual"
+    else
+        echo "File not found: $apk_path_manual"
     fi
 }
 
@@ -90,7 +102,7 @@ fetch_latest_release() {
     fi
 
     API_URL="https://api.github.com/repos/serifpersia/OCam/releases/latest"
-    DOWNLOAD_URL=$(curl -s $API_URL | jq -r '.assets[] | select(.name == "OCam.zip") | .browser_download_url')
+    DOWNLOAD_URL=$(curl -s $API_URL | jq -r '.assets[] | select(.name == "OCam-v1.0.0.zip") | .browser_download_url')
 
     if [ -z "$DOWNLOAD_URL" ]; then
         echo "Could not find the latest release zip file."

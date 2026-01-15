@@ -52,12 +52,27 @@ pause
 goto main_menu
 
 :install_android_app
-set "APK_PATH=android\app\build\outputs\apk\debug\app-debug.apk"
-if exist "%APK_PATH%" (
-    echo Found APK at %APK_PATH%. Installing...
-    adb install -r "%APK_PATH%"
+set "DEFAULT_APK_PATH=android\app\build\outputs\apk\debug\app-debug.apk"
+set "APK_FOUND=0"
+
+if exist "%DEFAULT_APK_PATH%" (
+    echo Found APK at %DEFAULT_APK_PATH%. Installing...
+    adb install -r "%DEFAULT_APK_PATH%"
+    set "APK_FOUND=1"
 ) else (
-    echo Default APK not found at %APK_PATH%.
+    if exist "release\" (
+        for /r "release" %%f in (*.apk) do (
+            echo Found APK in release directory: %%f. Installing...
+            adb install -r "%%f"
+            set "APK_FOUND=1"
+            goto :apk_installed_or_manual
+        )
+    )
+)
+
+:apk_installed_or_manual
+if "%APK_FOUND%"=="0" (
+    echo No APK found in default build path or release directory.
     echo Please build the Android app first, or enter the path to the APK file manually:
     set /p "apk_path_manual=Enter path: "
     if exist "%apk_path_manual%" (
@@ -82,6 +97,6 @@ goto main_menu
 
 :fetch_latest_release
 echo Fetching latest release...
-powershell -Command "try { $apiUrl = 'https://api.github.com/repos/serifpersia/OCam/releases/latest'; $response = Invoke-RestMethod -Uri $apiUrl; $downloadUrl = ($response.assets | Where-Object { $_.name -eq 'OCam.zip' }).browser_download_url; if ($downloadUrl) { Write-Host 'Downloading from ' $downloadUrl; Invoke-WebRequest -Uri $downloadUrl -OutFile 'OCam.zip'; if (Test-Path 'release') { Remove-Item -Recurse -Force 'release' }; New-Item -ItemType Directory -Force -Path 'release' | Out-Null; Expand-Archive -Path 'OCam.zip' -DestinationPath 'release'; Remove-Item 'OCam.zip'; Write-Host 'Latest release downloaded and extracted to ''release'' directory.'; } else { Write-Host 'Could not find the latest release zip file.'; } } catch { Write-Host 'Error fetching release: ' $_.Exception.Message; }"
+powershell -Command "try { $apiUrl = 'https://api.github.com/repos/serifpersia/OCam/releases/latest'; $response = Invoke-RestMethod -Uri $apiUrl; $downloadUrl = ($response.assets | Where-Object { $_.name -eq 'OCam-v1.0.0.zip' }).browser_download_url; if ($downloadUrl) { Write-Host 'Downloading from ' $downloadUrl; Invoke-WebRequest -Uri $downloadUrl -OutFile 'OCam.zip'; if (Test-Path 'release') { Remove-Item -Recurse -Force 'release' }; New-Item -ItemType Directory -Force -Path 'release' | Out-Null; Expand-Archive -Path 'OCam.zip' -DestinationPath 'release'; Remove-Item 'OCam.zip'; Write-Host 'Latest release downloaded and extracted to ''release'' directory.'; } else { Write-Host 'Could not find the latest release zip file.'; } } catch { Write-Host 'Error fetching release: ' $_.Exception.Message; }"
 pause
 goto main_menu
