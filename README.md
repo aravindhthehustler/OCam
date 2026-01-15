@@ -12,7 +12,7 @@
 *   Utilizes your **Android** device's camera for high-quality video input.
 *   Adjustable streaming parameters (resolution, FPS, bitrate).
 *   Manual camera controls (exposure, focus, flash).
-*   Cross-platform compatibility for **OBS Studio** plugin (**Windows**, **macOS**, **Linux**).
+*   Cross-platform compatibility for **OBS Studio** plugin (**Windows**, **Linux**).
 *   Easy setup via provided scripts.
 
 ## Installation
@@ -31,9 +31,15 @@ This is the recommended and easiest method for most users to quickly get **OCam*
 #### Quick Install Steps
 
 1.  **Run the Setup Script:**
-    Navigate to the root of this repository in your terminal or command prompt and execute the appropriate script for your operating system:
     *   **Windows:** `run.bat`
-    *   **macOS / Linux:** `./run.sh`
+    *   **Linux:** First, make the script executable:
+        ```bash
+        chmod +x run.sh
+        ```
+        Then run it:
+        ```bash
+        ./run.sh
+        ```
 
 2.  **Fetch the Latest Release:**
     From the interactive menu, select the "**Fetch Latest Release**" option. This will:
@@ -50,7 +56,6 @@ This is the recommended and easiest method for most users to quickly get **OCam*
 4.  **Install the OBS Plugin:**
     Manually copy the entire `obs-ocam-source` plugin directory from the `release` folder into the designated **OBS Studio** plugins location for your operating system:
     *   **Windows:** Copy `obs-ocam-source` to `C:\ProgramData\obs-studio\plugins`.
-    *   **macOS:** Copy `obs-ocam-source` to `~/Library/Application Support/obs-studio/plugins`.
     *   **Linux:** Copy `obs-ocam-source` to `~/.config/obs-studio/plugins`.
 
 ### Build from source:
@@ -100,7 +105,14 @@ Ensure you have the following development tools installed on your system:
 2.  **Run the Setup Script:**
     Execute the appropriate script for your operating system:
     *   **Windows:** `run.bat`
-    *   **macOS / Linux:** `./run.sh`
+    *   **Linux:** First, make the script executable:
+        ```bash
+        chmod +x run.sh
+        ```
+        Then run it:
+        ```bash
+        ./run.sh
+        ```
 
 3.  **Build and Install OBS Plugin:**
     From the interactive menu, select the "**Build and Install OBS Plugin**" option. This will compile the **OBS Studio** plugin and automatically place it into the correct directory for your operating system.
@@ -161,7 +173,7 @@ Once both the **OCam** app is on your **Android** device and the **OBS Studio** 
 
 2.  **Establish ADB Reverse Tunnel:**
     *   This step is crucial for the **OBS Studio** plugin to communicate effectively with the **OCam** app on your phone, allowing for control commands (like changing resolution, focus, etc.) to be sent from OBS to your device.
-    *   Run the setup script (`run.bat` for Windows or `./run.sh` for macOS/Linux) from your project root.
+    *   For Linux, first make the script executable by running `chmod +x run.sh`. Then, run the setup script (`run.bat` for Windows or `./run.sh` for Linux) from your project root.
     *   From the interactive menu, select the "**Start ADB Reverse**" option.
     *   The script will establish the necessary TCP port forwarding tunnels and will then pause. **Keep this terminal window open and the script running throughout your OCam session.**
     *   When you are finished using OCam, return to this terminal and press **'q'** to stop the ADB reverse process and close the tunnels cleanly.
